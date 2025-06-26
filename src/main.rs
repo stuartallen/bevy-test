@@ -10,6 +10,7 @@ mod demo;
 mod dev_tools;
 mod menus;
 mod screens;
+mod scene3d;
 mod theme;
 
 use bevy::{asset::AssetMetaCheck, prelude::*};
@@ -52,6 +53,7 @@ impl Plugin for AppPlugin {
             dev_tools::plugin,
             menus::plugin,
             screens::plugin,
+            scene3d::plugin,
             theme::plugin,
         ));
 
@@ -70,8 +72,8 @@ impl Plugin for AppPlugin {
         app.init_state::<Pause>();
         app.configure_sets(Update, PausableSystems.run_if(in_state(Pause(false))));
 
-        // Spawn the main camera.
-        app.add_systems(Startup, spawn_camera);
+        // Set up the clear color for 3D scene
+        app.insert_resource(ClearColor(Color::srgb(0.2, 0.2, 0.2)));
     }
 }
 
@@ -97,6 +99,3 @@ struct Pause(pub bool);
 #[derive(SystemSet, Copy, Clone, Eq, PartialEq, Hash, Debug)]
 struct PausableSystems;
 
-fn spawn_camera(mut commands: Commands) {
-    commands.spawn((Name::new("Camera"), Camera2d));
-}
